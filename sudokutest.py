@@ -17,6 +17,12 @@ class TestParseArguments(unittest.TestCase):
         self.assertEqual(level_name, 'l33t')
         self.assertEqual(board_number, -1)
 
+    def test_it_doesnt_work_when_missing_level_name(self):
+        self.assertRaises(
+            sudoku.SudokuError,
+            sudoku.parse_arguments, ['sudoku.py']
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
