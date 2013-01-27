@@ -1,4 +1,5 @@
 import sys
+import random
 
 DEBUG = True
 LEVELS = ['debug', 'n00b', 'l33t']
@@ -56,6 +57,19 @@ class SudokuGame(object):
                 "Each sudoku puzzle must be 9 lines long"
             )
 
+        self.puzzle = self.boards[random.randrange(len(self.boards))]
+
+    def start(self, board_number):
+        if board_number == -1:
+            board_number = random.randrange(len(self.boards))
+        elif board_number < 0 or board_number >= len(self.boards):
+            raise SudokuError(
+                "Can't find board number %d" % board_number
+            )
+
+        self.puzzle = self.boards[board_number]
+
+
 if __name__ == '__main__':
     try:
         level_name, board_number = parse_arguments(sys.argv)
@@ -63,3 +77,10 @@ if __name__ == '__main__':
         print "Usage: python sudoku.py [level name] [board number]"
         if DEBUG:
             print e
+
+    try:
+        with open('%s.sudoku' % level_name, 'r') as boards_file:
+            game = SudokuGame(boards_file)
+            game.start(board_number)
+    except SudokuError:
+        print "Puzzles file is invalid."
