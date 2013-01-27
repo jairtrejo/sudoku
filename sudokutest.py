@@ -1,5 +1,6 @@
-import sudoku
 import unittest
+
+import sudoku
 
 
 class TestParseArguments(unittest.TestCase):
@@ -61,6 +62,30 @@ class TestSudokuGameInit(unittest.TestCase):
     def test_it_doesnt_work_with_invalid_chars(self):
         boards_file = ("12345678x\n" * 9).strip().split('\n')
         self.assertRaises(sudoku.SudokuError, sudoku.SudokuGame, boards_file)
+
+
+class TestSudokuGameStart(unittest.TestCase):
+    boards_file = ("012345678\n" * 9 + "123456789\n" * 9).strip().split('\n')
+
+    def test_it_starts_game_with_specific_board_number(self):
+        game = sudoku.SudokuGame(self.boards_file)
+        game.start(0)
+        self.assertEqual(game.puzzle, [range(0, 9)] * 9)
+        game.start(1)
+        self.assertEqual(game.puzzle, [range(1, 10)] * 9)
+
+    def test_it_starts_game_with_random_board_number(self):
+        game = sudoku.SudokuGame(self.boards_file)
+        game.start(-1)
+        self.assertEqual(len(game.puzzle), 9)
+
+    def test_it_doesnt_start_game_with_wrong_board_number(self):
+        for wrong_board_number in [-2, 3, 9]:
+            game = sudoku.SudokuGame(self.boards_file)
+            self.assertRaises(
+                sudoku.SudokuError, game.start, wrong_board_number
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
