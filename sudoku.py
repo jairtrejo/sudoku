@@ -149,6 +149,7 @@ class SudokuGame(object):
             self.answer.append([])
             for j in xrange(9):
                 self.answer[i].append(self.puzzle[i][j])
+        self.game_over = False
 
     def start(self, board_number):
         if board_number == -1:
@@ -163,6 +164,40 @@ class SudokuGame(object):
             self.answer[i] = []
             for j in xrange(9):
                 self.answer[i].append(self.puzzle[i][j])
+
+    def check_block(self, block):
+        return set(block) == set(range(1, 10))
+
+    def check_row(self, row):
+        return self.check_block(self.answer[row])
+
+    def check_column(self, column):
+        return self.check_block(
+            [self.answer[row][column] for row in xrange(9)]
+        )
+
+    def check_square(self, row, column):
+        return self.check_block(
+            [
+                self.answer[r][c]
+                for r in xrange(row * 3, (row + 1) * 3)
+                for c in xrange(column * 3, (column + 1) * 3)
+            ]
+        )
+
+    def check_win(self):
+        for row in xrange(9):
+            if not self.check_row(row):
+                return False
+        for column in xrange(9):
+            if not self.check_column(column):
+                return False
+        for row in xrange(3):
+            for column in xrange(3):
+                if not self.check_square(row, column):
+                    return False
+        self.game_over = True
+        return True
 
 
 if __name__ == '__main__':
