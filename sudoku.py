@@ -40,6 +40,8 @@ class SudokuUI(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
 
+        self.row, self.col = -1, -1
+
         self.initUI()
 
     def initUI(self):
@@ -49,6 +51,9 @@ class SudokuUI(Frame):
         self.canvas.pack(fill=BOTH, expand=1)
         self.draw_grid()
         self.draw_puzzle()
+
+        self.canvas.bind("<Button-1>", self.cell_clicked)
+        self.canvas.bind("<Key>", self.key_pressed)
 
     def draw_grid(self):
         for i in xrange(10):
@@ -77,6 +82,39 @@ class SudokuUI(Frame):
                         text=answer, tags="numbers",
                         fill="black" if answer == original else "slate gray"
                     )
+
+    def draw_cursor(self):
+        self.canvas.delete("cursor")
+        if self.row >= 0 and self.col >= 0:
+            self.canvas.create_rectangle(
+                MARGIN + self.col * SIDE + 1,
+                MARGIN + self.row * SIDE + 1,
+                MARGIN + (self.col + 1) * SIDE - 1,
+                MARGIN + (self.row + 1) * SIDE - 1,
+                outline="red", tags="cursor"
+            )
+
+    def cell_clicked(self, event):
+        x, y = event.x, event.y
+        if (x > MARGIN and x < WIDTH - MARGIN and
+            y > MARGIN and y < HEIGHT - MARGIN):
+            self.canvas.focus_set()
+            row, col = (y - MARGIN) / SIDE, (x - MARGIN) / SIDE
+            if (row, col) == (self.row, self.col):
+                self.row, self.col = -1, -1
+            elif self.game.puzzle[row][col] == 0:
+                self.row, self.col = row, col
+        else:
+            self.row, self.col = -1, -1
+
+        self.draw_cursor()
+
+    def key_pressed(self, event):
+        if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
+            self.game.answer[self.row][self.col] = int(event.char)
+            self.col, self.row = -1, -1
+            self.draw_puzzle()
+            self.draw_cursor()
 class SudokuGame(object):
     def __init__(self, boards_file):
         self.boards = [[]]
