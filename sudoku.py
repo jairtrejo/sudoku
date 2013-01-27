@@ -94,7 +94,22 @@ class SudokuUI(Frame):
                 outline="red", tags="cursor"
             )
 
+    def draw_victory(self):
+        self.canvas.create_oval(
+            MARGIN + SIDE * 2, MARGIN + SIDE * 2,
+            MARGIN + SIDE * 7, MARGIN + SIDE * 7,
+            fill="dark orange", outline="orange"
+        )
+        self.canvas.create_text(
+            MARGIN + 4 * SIDE + SIDE / 2,
+            MARGIN + 4 * SIDE + SIDE / 2,
+            text="You win!", tags="victory",
+            fill="white", font=("Arial", 32)
+        )
+
     def cell_clicked(self, event):
+        if self.game.game_over:
+            return
         x, y = event.x, event.y
         if (x > MARGIN and x < WIDTH - MARGIN and
             y > MARGIN and y < HEIGHT - MARGIN):
@@ -110,11 +125,17 @@ class SudokuUI(Frame):
         self.draw_cursor()
 
     def key_pressed(self, event):
+        if self.game.game_over:
+            return
         if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
             self.game.answer[self.row][self.col] = int(event.char)
             self.col, self.row = -1, -1
             self.draw_puzzle()
             self.draw_cursor()
+            if self.game.check_win():
+                self.draw_victory()
+
+
 class SudokuGame(object):
     def __init__(self, boards_file):
         self.boards = [[]]
