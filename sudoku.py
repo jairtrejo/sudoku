@@ -1,7 +1,7 @@
 import sys
 import random
 
-from Tkinter import Tk, Canvas, Frame, BOTH
+from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
 DEBUG = True
 LEVELS = ['debug', 'n00b', 'l33t']
@@ -47,8 +47,17 @@ class SudokuUI(Frame):
     def initUI(self):
         self.parent.title("Sudoku")
         self.pack(fill=BOTH, expand=1)
-        self.canvas = Canvas(self, width=WIDTH, height=HEIGHT)
-        self.canvas.pack(fill=BOTH, expand=1)
+        self.canvas = Canvas(
+            self, width=WIDTH, height=HEIGHT,
+            highlightthickness=0
+        )
+        self.canvas.pack(fill=BOTH, side=TOP)
+        clear_button = Button(
+            self, text="Clear answers",
+            command=self.clear_answers
+        )
+        clear_button.pack(fill=BOTH, side=BOTTOM)
+
         self.draw_grid()
         self.draw_puzzle()
 
@@ -98,7 +107,7 @@ class SudokuUI(Frame):
         self.canvas.create_oval(
             MARGIN + SIDE * 2, MARGIN + SIDE * 2,
             MARGIN + SIDE * 7, MARGIN + SIDE * 7,
-            fill="dark orange", outline="orange"
+            tags="victory", fill="dark orange", outline="orange"
         )
         self.canvas.create_text(
             MARGIN + 4 * SIDE + SIDE / 2,
@@ -134,6 +143,11 @@ class SudokuUI(Frame):
             self.draw_cursor()
             if self.game.check_win():
                 self.draw_victory()
+
+    def clear_answers(self):
+        self.game.set_answer_to_puzzle()
+        self.canvas.delete("victory")
+        self.draw_puzzle()
 
 
 class SudokuGame(object):
@@ -237,7 +251,7 @@ if __name__ == '__main__':
 
             root = Tk()
             ui = SudokuUI(root, game)
-            root.geometry("%dx%d" % (WIDTH, HEIGHT))
+            root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
             root.mainloop()
     except SudokuError, e:
         print "Puzzles file is invalid."
