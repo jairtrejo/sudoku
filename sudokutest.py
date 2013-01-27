@@ -23,6 +23,21 @@ class TestParseArguments(unittest.TestCase):
             sudoku.parse_arguments, ['sudoku.py']
         )
 
+    def test_it_doesnt_work_for_invalid_level_names(self):
+        for invalid_name in ['l00t', 'n33b', '']:
+            self.assertRaises(
+                sudoku.SudokuError,
+                sudoku.parse_arguments, ['sudoku.py', invalid_name]
+            )
+
+    def test_it_doesnt_work_for_invalid_board_numbers(self):
+        for invalid_board_number in ['-1', 'x']:
+            self.assertRaises(
+                sudoku.SudokuError,
+                sudoku.parse_arguments,
+                ['sudoku.py', 'n00b', invalid_board_number]
+            )
+
 
 class TestSudokuGameInit(unittest.TestCase):
     def test_it_creates_board_from_file(self):
