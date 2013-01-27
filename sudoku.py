@@ -32,6 +32,7 @@ class SudokuGame(object):
     def __init__(self, boards_file):
         self.boards = [[]]
         for line in boards_file:
+            line = line.strip()
             if len(line) != 9:
                 self.boards = []
                 raise SudokuError(
