@@ -131,5 +131,17 @@ class TestSudokuGameCheckers(unittest.TestCase):
                 )
 
 
+class TestSudokuGameSetAnswerToPuzzle(unittest.TestCase):
+    def test_it_resets_the_game(self):
+        boards_file = ("012345678\n" * 9).strip().split('\n')
+        game = sudoku.SudokuGame(boards_file)
+        game.game_over = True
+        game.answer = [range(1, 10)] * 9
+
+        game.set_answer_to_puzzle()
+        self.assertFalse(game.game_over)
+        self.assertEqual(game.puzzle, game.answer)
+
+
 if __name__ == '__main__':
     unittest.main()

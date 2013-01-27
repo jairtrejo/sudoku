@@ -165,12 +165,15 @@ class SudokuGame(object):
             )
 
         self.puzzle = self.boards[random.randrange(len(self.boards))]
+        self.set_answer_to_puzzle()
+
+    def set_answer_to_puzzle(self):
+        self.game_over = False
         self.answer = []
         for i in xrange(9):
             self.answer.append([])
             for j in xrange(9):
                 self.answer[i].append(self.puzzle[i][j])
-        self.game_over = False
 
     def start(self, board_number):
         if board_number == -1:
@@ -179,12 +182,8 @@ class SudokuGame(object):
             raise SudokuError(
                 "Can't find board number %d" % board_number
             )
-
         self.puzzle = self.boards[board_number]
-        for i in xrange(9):
-            self.answer[i] = []
-            for j in xrange(9):
-                self.answer[i].append(self.puzzle[i][j])
+        self.set_answer_to_puzzle()
 
     def check_block(self, block):
         return set(block) == set(range(1, 10))
