@@ -24,5 +24,17 @@ class TestParseArguments(unittest.TestCase):
         )
 
 
+class TestSudokuGameInit(unittest.TestCase):
+    def test_it_creates_board_from_file(self):
+        boards_file = ("123456789\n" * 9).strip().split('\n')
+        game = sudoku.SudokuGame(boards_file)
+        self.assertEqual(game.boards, [[range(1, 10)] * 9])
+
+    def test_it_creates_multiple_boards_from_file(self):
+        boards_file = ("012345678\n" * 18).strip().split('\n')
+        game = sudoku.SudokuGame(boards_file)
+        self.assertEqual(game.boards, [[range(0, 9)] * 9] * 2)
+
+
 if __name__ == '__main__':
     unittest.main()
