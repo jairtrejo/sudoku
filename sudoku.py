@@ -3,18 +3,27 @@ import random
 
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
-DEBUG = True
-LEVELS = ['debug', 'n00b', 'l33t']
-MARGIN = 20
-SIDE = 50
-WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9
+DEBUG = True  # Exceptions are raised for debugging purposes
+LEVELS = ['debug', 'n00b', 'l33t']  # Available levels
+MARGIN = 20  # Pixels around the board
+SIDE = 50  # Width of every board cell.
+WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
 
 
 class SudokuError(Exception):
+    """
+    An application specific error.
+    """
     pass
 
 
 def parse_arguments(argv):
+    """
+    Parses arguments of the form:
+        sudoku.py <level name> [board number]
+    Where `level name` must be in the LEVELS list and `board number` must be
+    a positive integer.
+    """
     if len(argv) == 2:
         level_name, board_number = argv[1], -1
     elif len(argv) == 3:
@@ -35,6 +44,9 @@ def parse_arguments(argv):
 
 
 class SudokuUI(Frame):
+    """
+    The Tkinter UI, responsible for drawing the board and accepting user input.
+    """
     def __init__(self, parent, game):
         self.game = game
         Frame.__init__(self, parent)
@@ -151,6 +163,10 @@ class SudokuUI(Frame):
 
 
 class SudokuGame(object):
+    """
+    A Sudoku game, in charge of storing the state of the board and checking
+    wether the puzzle is completed.
+    """
     def __init__(self, boards_file):
         self.boards = [[]]
         for line in boards_file:
